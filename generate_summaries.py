@@ -104,7 +104,7 @@ def summarization (text, model_key, model_value):
 # --------------------------------------------
 # Main loop
 # --------------------------------------------
-papers = sorted(PAPERS_DIR.glob("*.pdf"))
+papers = sorted(PAPERS_DIR.glob("*.pdf"))[:2]
 print(f"{len(papers)} PDFs found")
 
 for paper in papers:
