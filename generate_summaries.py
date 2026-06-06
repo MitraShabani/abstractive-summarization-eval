@@ -78,9 +78,13 @@ def summarization (text, model_key, model_value):
         max_output = 512
         min_output = 128
 
+    # models expects the string format so we define 'device' as a string and call it for inputs and the model.
+    # It garantees they are always on the same device.
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
     # conversion, text -> numbers
     tokenizer = AutoTokenizer.from_pretrained(model_value)
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=1024)
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=max_input).to(device)
 
     """ encoder takes those numbers and transform them into a rich context-aware matrix.
         (AutoModelForSeq2SeqLM adds a decoder head that is specifically designed
@@ -89,7 +93,7 @@ def summarization (text, model_key, model_value):
     """
 
     # encoder and decoder run here
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_value).to(DEVICE if DEVICE == 0 else "cpu")
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_value).to(device)
     summary_ids = model.generate(
         inputs["input_ids"],
         max_new_tokens=max_output,
