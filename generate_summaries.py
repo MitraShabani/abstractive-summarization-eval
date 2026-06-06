@@ -30,10 +30,9 @@ subprocess.run(["pip", "install", "-q",
 # --------------------------------------------
 import json
 import torch
+import pymupdf # fitz
 from pathlib import Path
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from pdf_parser.sentences import split_into_sentences
-from pdf_parser.blocks import extract_blocks
 
 # --------------------------------------------
 # Configuration
@@ -56,10 +55,13 @@ print(f"Using device: {'GPU' if DEVICE == 0 else 'CPU'}")
 # --------------------------------------------
 def extract_text_from_pdf(pdf_path):
 
-    doc, pages = extract_blocks(pdf_path)
-    sentences = split_into_sentences(pages)
+    # the input for model (full_text) must be plain string.
+    full_text = " "
 
-    return sentences
+    with pymupdf.open(pdf_path) as doc:
+        for page in doc:
+            full_text += page.get_text()
+    return full_text
 
 # --------------------------------------------
 # Summarization
