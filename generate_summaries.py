@@ -33,6 +33,7 @@ import torch
 import pymupdf # fitz
 from pathlib import Path
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from pdf_refine import clean_text
 
 # --------------------------------------------
 # Configuration
@@ -61,7 +62,7 @@ def extract_text_from_pdf(pdf_path):
     with pymupdf.open(pdf_path) as doc:
         for page in doc:
             full_text += page.get_text()
-    return full_text
+    return clean_text(full_text)
 
 # --------------------------------------------
 # Summarization
