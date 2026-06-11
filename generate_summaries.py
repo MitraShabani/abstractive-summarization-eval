@@ -101,7 +101,7 @@ def summarization (text, model_key, model_value):
         min_new_tokens=min_output,
         num_beams=4,
         length_penalty=2.0,
-        early_stopping=True
+        early_stopping=True,
         no_repeat_ngram_size=4, # prevents exact phrase repetition
         repetition_penalty=2.0 # discourages repeating any individual word too often
     )
