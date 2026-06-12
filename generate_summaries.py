@@ -43,7 +43,6 @@ OUTPUT_DIR = Path("/content/drive/MyDrive/abstractive-summarization-eval/outputs
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 MODELS = {
-    "bart": "facebook/bart-large-cnn",
     "led": "allenai/led-base-16384",
     "led_arxiv": "allenai/led-large-16384-arxiv"
 }
@@ -69,15 +68,9 @@ def extract_text_from_pdf(pdf_path):
 # --------------------------------------------
 def summarization (text, model_key, model_value):
 
-    # Token limits differ per model, for BART 1024 tukens of input and 16384 for LED :
-    if model_key == "bart":
-        max_input = 1024
-        max_output = 256  # how long the summary can be
-        min_output = 64   # stops the model from producing a one-sentence summary
-    else:
-        max_input = 16384
-        max_output = 512
-        min_output = 128
+    max_input = 16384
+    max_output = 512  # how long the summary can be
+    min_output = 200   # stops the model from producing a one-sentence summary
 
     # models expects the string format so we define 'device' as a string and call it for inputs and the model.
     # It garantees they are always on the same device.
