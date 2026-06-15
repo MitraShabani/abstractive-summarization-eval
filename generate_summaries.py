@@ -43,7 +43,7 @@ OUTPUT_DIR = Path("/content/drive/MyDrive/abstractive-summarization-eval/outputs
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 MODELS = {
-    "led": "allenai/led-base-16384",
+    "led_general": "pszemraj/led-base-book-summary",
     "led_arxiv": "allenai/led-large-16384-arxiv"
 }
 # 0 -> GPU , -1 -> CPU
