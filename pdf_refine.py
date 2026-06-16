@@ -28,6 +28,8 @@ def clean_text(text):
     text = re.sub(r'arXiv:\S+\s+\[.*?\].*', '', text)
     # Remove license notice
     text = re.sub(r'Licensed under.*?reserved\.', '', text, flags=re.DOTALL)
+    # Remove LaTeX markup
+    text = re.sub(r'[#@\\][a-zA-Z0-9]+', '', text)
     # Remove very short lines (less than 3 words)
     lines = text.split('\n')
     lines = [l for l in lines if len(l.split()) >= 3]
