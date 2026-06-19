@@ -22,3 +22,5 @@ in abstractive summarization of scientific papers?"
 - **Step 5:** Aggregate results and compare models statistically
 
 ## Project Structure
+
+MNLI (Multi-Genre Natural Language Inference)
