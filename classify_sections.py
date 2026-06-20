@@ -104,15 +104,18 @@ def compute_kl(paper_dist, summary_dist):
 
     kl = 0.0
     for section in SECTIONS:
-        expected = paper_dist[section]  # paper's distribution
-        actual = summary_dist[section]  # summary's distribution
+        expected = paper_dist[section]  # paper's distribution = P
+        actual = summary_dist[section]  # summary's distribution = Q
         
-        if actual > 0:
-            # Standard KL term for covered sections, we add nothing
-            kl += actual * np.log(actual / expected) if expected > 0 else 0
-        else:
-            # Penalty for completely ignored sections
+        if expected == 0:
+            # Paper has no sentences in this section — skip
+            continue
+        elif actual == 0:
+            # Summary completely ignores this section — apply penalty
             kl += expected
+        else:
+            # Standard KL term: P * log(P/Q)
+            kl += expected * np.log(expected / actual)
     
     return float(kl)
 
