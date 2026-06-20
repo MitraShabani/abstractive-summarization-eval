@@ -106,7 +106,7 @@ def summarization (text, model_key, model_value):
 # --------------------------------------------
 # Main loop
 # --------------------------------------------
-papers = sorted(PAPERS_DIR.glob("*.pdf"))[:2]
+papers = sorted(PAPERS_DIR.glob("*.pdf"))
 print(f"{len(papers)} PDFs found")
 
 for paper in papers:
@@ -132,9 +132,8 @@ for paper in papers:
             print(f" ERROR with {model_key} on {paper_id}: {e}")
             summaries["summaries"][model_key] = None
 
-     # Save immediately to GoogleDrive
-    with open(output_file, "w") as f:
-        json.dump(summaries, f, indent=2)
+    # Save immediately to GoogleDrive
+    Path(output_file).write_text(json.dumps(summaries, indent=2))
     print(f"  Saved to {output_file}")
 
 print("\nAll done!")
