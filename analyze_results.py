@@ -68,7 +68,7 @@ if len(models) == 2:
 # Figure 1 — KL divergence box plot
 # --------------------------------------------
 fig, ax = plt.subplots()
-df.boxplot(column= "KL_divergence", by="model")
+df.boxplot(column= "kl_divergence", by="model")
 
 ax.set_title("KL Divergence by Model")
 ax.set_xlabel("Model")
