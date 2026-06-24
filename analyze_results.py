@@ -3,6 +3,7 @@ import json
 import pandas as pd
 from scipy.stats import wilcoxon
 import matplotlib.pyplot as plt
+import numpy as np
 # --------------------------------------------
 # Configuration
 # --------------------------------------------
@@ -14,12 +15,18 @@ RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 # Load all results
 # --------------------------------------------
 results = []
+paper_dists = []
+model_dists = {} # {model_key: [dist1, dist2, ...]}
+
 for j in sorted(DISTRIBUTIONS_DIR.glob("*.json")):
     data = json.loads(Path(j).read_text())
 
     paper_id = data["paper_id"]
     paper_entropy = data["paper_entropy"]
     summaries = data["summaries"]
+
+    # Store paper distribution
+    paper_dists.append(data["paper_distribution"])
 
     for model_key, summary_data in summaries.items():
         results.append({
@@ -29,6 +36,11 @@ for j in sorted(DISTRIBUTIONS_DIR.glob("*.json")):
             "entropy": summary_data["entropy"],
             "paper_entropy": paper_entropy
         })
+
+        # Store model distribution
+        if model_key not in model_dists:
+            model_dists[model_key] = []
+        model_dists[model_key].append(summary_data["distribution"])
 
 df = pd.DataFrame(results)
 print(f"Loaded {len(df)} results")
@@ -98,5 +110,45 @@ plt.savefig(RESULTS_DIR / "entropy_boxplot.png", dpi=150)
 plt.close()
 print("Saved Figure 2: Entropy box plot")
 
-print("\nAll results saved to", RESULTS_DIR)
+# --------------------------------------------
+# Figure 3 — Average section distributions
+# --------------------------------------------
+SECTIONS = ["background", "methods", "results", "conclusion"]
 
+# average value across 50 papers
+paper_mean = {section: np.mean([d[section] for d in paper_dists]) for section in SECTIONS}
+# average value for each model across 50 papers
+model_means = {model: {section: np.mean([d[section] for d in dists]) for section in SECTIONS} 
+               for model, dists in model_dists.items()}
+
+# Plot
+x = np.arange(len(SECTIONS)) # one position for each section which is [0,1,2,3]
+width = 0.25 # each bar
+fig, ax = plt.subplots(figsize=(10, 6))
+
+ax.bar(
+    x - width,
+    [paper_mean[section] for section in SECTIONS],
+    width,
+    label="Paper (abstract)",
+    color="gray"
+    )
+
+for i, (model, dist) in enumerate(model_means.items()):
+    ax.bar(
+        x + i*width, # i is used to shift each model's bars horizontally so they don't overlap
+        [dist[section] for section in SECTIONS],
+        width,
+        label=model
+        )
+
+ax.set_xticks(x)
+ax.set_xticklabels(SECTIONS)
+ax.set_ylabel("Proportion")
+ax.set_title("Average Section Distribution: Paper(abstract) vs Summaries")
+ax.legend()
+
+plt.tight_layout()
+plt.savefig(RESULTS_DIR / "section_distributions.png", dpi=150)
+plt.close()
+print("Saved Figure 3: Section distributions")
