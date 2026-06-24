@@ -68,12 +68,15 @@ if len(models) == 2:
 # Figure 1 — KL divergence box plot
 # --------------------------------------------
 fig, ax = plt.subplots()
-df.boxplot(column= "kl_divergence", by="model")
+kl_data = [df[df["model"] == model]["kl_divergence"].values for model in models]
 
+ax.boxplot(kl_data, labels=models)
 ax.set_title("KL Divergence by Model")
 ax.set_xlabel("Model")
-ax.set_ylabel("KL Divergence")
+ax.set_ylabel("KL Divergence (lower = more faithful)")
 
+plt.suptitle("") # replaces that automatic title with an empty string
+plt.tight_layout()
 plt.savefig(RESULTS_DIR / "kl_divergence_boxplot.png", dpi=150)
 plt.close()
 print("\nSaved Figure 1: KL divergence box plot")
@@ -82,8 +85,9 @@ print("\nSaved Figure 1: KL divergence box plot")
 # Figure 2 — Entropy box plot
 # --------------------------------------------
 fig, ax = plt.subplots()
-df.boxplot(column="entropy", by="model", ax=ax)
+entropy_data = [df[df["model"] == model]["entropy"].values for model in models]
 
+ax.boxplot(entropy_data, labels=models)
 ax.set_title("Entropy by Model")
 ax.set_xlabel("Model")
 ax.set_ylabel("Entropy (higher = more balanced)")
