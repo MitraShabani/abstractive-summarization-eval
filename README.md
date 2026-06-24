@@ -1,7 +1,7 @@
 # Abstractive Summarization Evaluation for Scientific Papers
 
 ## Research Question
-"Does domain-specific training produce more balanced section coverage 
+"Does domain-specific training produce more balanced section coverage
 in abstractive summarization of scientific papers?"
 
 ## Models Compared
@@ -90,5 +90,52 @@ preliminary and may not generalize across all CS subfields.
 
 | Model | Mean KL Divergence | Std KL | Mean Entropy | Std Entropy |
 |-------|-------------------|--------|--------------|-------------|
-| LED-general | ? | ? | ? | ? |
-| LED-arXiv | ? | ? | ? | ? |
+| LED-general | 0.2420 | 0.2123  | 0.9366  | 0.2439  |
+| LED-arXiv | 0.1610 | 0.1396 | 0.9344  | 0.2065 |
+
+### Statistical Test
+Wilcoxon signed-rank test (paired, KL divergence):
+- LED-general vs LED-arXiv
+- statistic: 352.0, p-value: 0.0052
+- **Significant at α=0.05**
+
+### Interpretation
+LED-arXiv (domain-specific) achieves significantly lower KL divergence
+than LED-general (p=0.0052), indicating more balanced section coverage
+that better mirrors the structural composition of the source papers.
+Entropy scores are comparable between models, suggesting both produce
+similarly balanced internal distributions — but LED-arXiv aligns more
+faithfully with the paper's actual structure.
+
+## Project Structure
+
+
+├── papers/                50 arXiv PDFs (Google Drive only)
+
+├── outputs/               generated data (Google Drive only)
+
+│   ├── summaries/         one JSON per paper
+
+│   └── distributions/     KL scores and distributions
+
+├── results/               figures and statistics (committed)
+
+│   ├── statistics.csv
+
+│   ├── wilcoxon_test.txt
+
+│   ├── kl_divergence_boxplot.png
+
+│   ├── entropy_boxplot.png
+
+│   └── section_distributions.png
+
+├── generate_summaries.py   Step 2
+
+├── classify_sections.py    Steps 3 and 4
+
+├── analyze_results.py      Step 5
+
+├── pdf_refine.py           text cleaning utilities
+
+└── README.md
