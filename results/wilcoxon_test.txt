@@ -1,0 +1,4 @@
+Wilcoxon signed-rank test (KL divergence)
+led_general vs led_arxiv
+statistic: 352.0000, p-value: 0.0052
+Significant at alpha=0.05
